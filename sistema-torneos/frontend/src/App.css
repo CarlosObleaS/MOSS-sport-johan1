@@ -1,0 +1,154 @@
+:root {
+  --mil-bg: #101a14;
+  --mil-panel: #1a2920;
+  --mil-panel-2: #22352a;
+  --mil-border: #39513f;
+  --mil-text: #e7efe3;
+  --mil-muted: #aebcae;
+  --mil-accent: #c5a45b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: var(--mil-text);
+  background: linear-gradient(180deg, #0f1913 0%, #132218 100%);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: 0.2px;
+}
+
+.animate-fadeIn {
+  animation: fadeInUp 220ms ease-out both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-slate-900 {
+  background-color: var(--mil-bg) !important;
+}
+
+.bg-slate-800 {
+  background-color: var(--mil-panel) !important;
+  border: 1px solid var(--mil-border);
+}
+
+.bg-slate-700 {
+  background-color: var(--mil-panel-2) !important;
+}
+
+.bg-slate-900\/40,
+.bg-slate-900\/50,
+.bg-slate-900\/60 {
+  background-color: rgba(16, 26, 20, 0.55) !important;
+}
+
+.bg-slate-800\/50,
+.bg-slate-800\/60 {
+  background-color: rgba(26, 41, 32, 0.7) !important;
+}
+
+.text-white,
+.text-slate-200 {
+  color: var(--mil-text) !important;
+}
+
+.text-slate-300 {
+  color: #c6d0c6 !important;
+}
+
+.text-slate-400 {
+  color: var(--mil-muted) !important;
+}
+
+.text-slate-900 {
+  color: #101a14 !important;
+}
+
+.text-yellow-500 {
+  color: var(--mil-accent) !important;
+}
+
+.text-yellow-400 {
+  color: #d0b67e !important;
+}
+
+.border-slate-700,
+.border-slate-600 {
+  border-color: var(--mil-border) !important;
+}
+
+.bg-yellow-600 {
+  background-color: #7f9948 !important;
+}
+
+.hover\:bg-yellow-500:hover {
+  background-color: #8aa554 !important;
+}
+
+.hover\:bg-slate-600:hover {
+  background-color: #2b4134 !important;
+}
+
+.hover\:bg-slate-700:hover {
+  background-color: #2e4638 !important;
+}
+
+button {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+input,
+select,
+textarea {
+  background-color: #1f3127 !important;
+  border: 1px solid var(--mil-border) !important;
+  color: var(--mil-text) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9cae9c;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #7f9948 !important;
+  box-shadow: 0 0 0 2px rgba(127, 153, 72, 0.2);
+}
+
+thead tr {
+  background-color: rgba(38, 57, 45, 0.6);
+}
+
+tbody tr:hover {
+  background-color: rgba(51, 74, 59, 0.28);
+}
+
+@media (max-width: 768px) {
+  .text-3xl {
+    font-size: 1.7rem !important;
+  }
+  .text-2xl {
+    font-size: 1.35rem !important;
+  }
+}

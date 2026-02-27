@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base para que la página sea inmersiva */
+body {
+  @apply bg-slate-900 text-white font-sans antialiased;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Estilo para las tarjetas de las 8 promociones */
+.card-promocion {
+  @apply bg-deporte-card border-2 border-transparent rounded-2xl p-6 
+         transition-all duration-300 cursor-pointer shadow-lg;
+}
+
+.card-promocion:hover {
+  @apply border-deporte-gold scale-105 shadow-deporte-gold/20;
+}
+
+/* Títulos con degradados para que se vean modernos y didácticos */
+.titulo-gradiente {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 font-extrabold;
+}
+
+/* Estilo para la Tabla General (similar a tu Excel) */
+.tabla-container {
+  @apply overflow-hidden rounded-xl border border-slate-700 bg-slate-800/50 backdrop-blur-sm;
+}
