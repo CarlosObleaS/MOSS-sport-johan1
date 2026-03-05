@@ -121,8 +121,29 @@ app.post('/api/register', async (req, res) => {
   res.json({ mensaje: "Usuario registrado con éxito" });
 });
 
-sequelize.sync({ alter: true }).then(() => {
-  app.listen(PORT, () => console.log(`Servidor en puerto ${PORT} y DB sincronizada (schema updated)`));
-});
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const startServer = async () => {
+  const maxRetries = Number.parseInt(process.env.DB_CONNECT_RETRIES || '30', 10);
+  const retryDelayMs = Number.parseInt(process.env.DB_CONNECT_RETRY_DELAY_MS || '2000', 10);
+
+  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
+    try {
+      await sequelize.authenticate();
+      await sequelize.sync({ alter: true });
+      app.listen(PORT, () => console.log(`Servidor en puerto ${PORT} y DB sincronizada (schema updated)`));
+      return;
+    } catch (error) {
+      console.error(`Intento ${attempt}/${maxRetries} de conexión a DB falló:`, error.message);
+      if (attempt === maxRetries) {
+        console.error('No se pudo conectar a la base de datos tras varios intentos. Cerrando proceso.');
+        process.exit(1);
+      }
+      await wait(retryDelayMs);
+    }
+  }
+};
+
+startServer();
 
 

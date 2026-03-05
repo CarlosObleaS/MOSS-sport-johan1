@@ -17,10 +17,12 @@ services:
   backend:
     build:
       context: ./backend
-    restart: unless-stopped
+    restart: always
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-sistema_torneos}
       PORT: 5000
+      DB_CONNECT_RETRIES: ${DB_CONNECT_RETRIES:-30}
+      DB_CONNECT_RETRY_DELAY_MS: ${DB_CONNECT_RETRY_DELAY_MS:-2000}
     depends_on:
       db:
         condition: service_healthy
