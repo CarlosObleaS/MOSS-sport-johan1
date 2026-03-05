@@ -228,7 +228,6 @@ function App() {
 
   const activeYear = useMemo(() => getYearFromUrl(), []);
 
-  const [isLoading, setIsLoading] = useState(true);
 
   const [authTab, setAuthTab] = useState('login');
 
@@ -270,51 +269,23 @@ function App() {
 
 
 
-  const [categoriasDisponibles, setCategoriasDisponibles] = useState(() => {
-
-    const guardadas = leerStorage('categoriasDisponibles', null);
-
-    if (Array.isArray(guardadas) && guardadas.length > 0) {
-
-      return guardadas;
-
-    }
-
-    return CATEGORIAS_BASE.map((nombre) => ({ id: normalizarId(nombre), nombre }));
-
-  });
-
-  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(() =>
-
-    leerStorage('categoriasSeleccionadas', [])
-
+  const [categoriasDisponibles, setCategoriasDisponibles] = useState(
+    CATEGORIAS_BASE.map((nombre) => ({ id: normalizarId(nombre), nombre }))
   );
+
+  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
 
   const [nuevaCategoria, setNuevaCategoria] = useState('');
 
   const [nuevaDisciplina, setNuevaDisciplina] = useState('');
 
-  const [linkGeneral, setLinkGeneral] = useState(() => localStorage.getItem('linkGeneral') || '');
+  const [linkGeneral, setLinkGeneral] = useState('');
 
-  const [linkRegistro, setLinkRegistro] = useState(() => localStorage.getItem('linkRegistro') || '');
+  const [linkRegistro, setLinkRegistro] = useState('');
 
-  const [disciplinasConfig, setDisciplinasConfig] = useState(() => {
+  const [disciplinasConfig, setDisciplinasConfig] = useState([...DISCIPLINAS]);
 
-    const s = leerStorage('disciplinasConfig', null);
-
-    return Array.isArray(s) && s.length > 0 ? s : [...DISCIPLINAS];
-
-  });
-
-  const [puntosPorPuesto, setPuntosPorPuesto] = useState(() => {
-
-    const s = leerStorage('puntosPorPuesto', null);
-
-    if (s && typeof s === 'object') return s;
-
-    return { ...PUNTOS_POR_PUESTO_DEFAULT };
-
-  });
+  const [puntosPorPuesto, setPuntosPorPuesto] = useState({ ...PUNTOS_POR_PUESTO_DEFAULT });
 
   const [disciplinasPuntosAbiertas, setDisciplinasPuntosAbiertas] = useState([]);
 
@@ -322,7 +293,7 @@ function App() {
 
 
 
-  const [promociones, setPromociones] = useState(() => leerStorage('promociones', []));
+  const [promociones, setPromociones] = useState([]);
 
   const [promocionesAbiertas, setPromocionesAbiertas] = useState([]);
 
@@ -338,11 +309,11 @@ function App() {
 
   const [disciplinasAbiertas, setDisciplinasAbiertas] = useState([]);
 
-  const [arbitroData, setArbitroData] = useState(() => leerStorage('arbitroData', null));
+  const [arbitroData, setArbitroData] = useState(null);
 
   const [arbitroCategoriaId, setArbitroCategoriaId] = useState('');
 
-  const [calendario, setCalendario] = useState(() => leerStorage('calendario', {}));
+  const [calendario, setCalendario] = useState({});
 
   const [arbitroDisciplina, setArbitroDisciplina] = useState('');
 
@@ -368,7 +339,7 @@ function App() {
 
   const [editarScorePartido, setEditarScorePartido] = useState(null); // { categoriaId, disciplina, partidoId, scoreLocal, scoreVisitante }
 
-  const [rankingsHistoricos, setRankingsHistoricos] = useState(() => leerStorage('rankingsHistoricos', []));
+  const [rankingsHistoricos, setRankingsHistoricos] = useState([]);
   const [torneoHabilitado, setTorneoHabilitado] = useState(true);
   const [logoTorneo, setLogoTorneo] = useState('');
   const [logoTorneoNombre, setLogoTorneoNombre] = useState('');
@@ -409,30 +380,6 @@ function App() {
 
   useEffect(() => {
 
-    try {
-
-      localStorage.setItem('categoriasDisponibles', JSON.stringify(categoriasDisponibles));
-
-    } catch (e) { }
-
-  }, [categoriasDisponibles]);
-
-
-
-  useEffect(() => {
-
-    try {
-
-      localStorage.setItem('categoriasSeleccionadas', JSON.stringify(categoriasSeleccionadas));
-
-    } catch (e) { }
-
-  }, [categoriasSeleccionadas]);
-
-
-
-  useEffect(() => {
-
     const idsSeleccionadas = categoriasSeleccionadas.map((c) => c.id);
 
     const hayDuplicados = categoriasDisponibles.some((c) => idsSeleccionadas.includes(c.id));
@@ -446,18 +393,6 @@ function App() {
   }, [categoriasDisponibles, categoriasSeleccionadas]);
 
 
-
-
-
-  useEffect(() => {
-
-    if (linkGeneral) {
-
-      localStorage.setItem('linkGeneral', linkGeneral);
-
-    }
-
-  }, [linkGeneral]);
 
 
 
@@ -477,42 +412,6 @@ function App() {
 
   useEffect(() => {
 
-    if (linkRegistro) {
-
-      localStorage.setItem('linkRegistro', linkRegistro);
-
-    }
-
-  }, [linkRegistro]);
-
-
-
-  useEffect(() => {
-
-    try {
-
-      localStorage.setItem('disciplinasConfig', JSON.stringify(disciplinasConfig));
-
-    } catch (e) { }
-
-  }, [disciplinasConfig]);
-
-
-
-  useEffect(() => {
-
-    try {
-
-      localStorage.setItem('puntosPorPuesto', JSON.stringify(puntosPorPuesto));
-
-    } catch (e) { }
-
-  }, [puntosPorPuesto]);
-
-
-
-  useEffect(() => {
-
     if (!toastMensaje) return;
 
     const t = setTimeout(() => setToastMensaje(null), 4000);
@@ -520,22 +419,6 @@ function App() {
     return () => clearTimeout(t);
 
   }, [toastMensaje]);
-
-
-
-  useEffect(() => {
-
-    try {
-
-      localStorage.setItem('promociones', JSON.stringify(promociones));
-
-    } catch (e) {
-
-      // console.warn('LocalStorage quota exceeded for promotions');
-
-    }
-
-  }, [promociones]);
 
 
 
@@ -580,56 +463,6 @@ function App() {
     }
 
   }, [authUser]);
-
-
-
-  useEffect(() => {
-
-    const handleStorage = (event) => {
-
-      if (event.key !== 'promociones') return;
-
-      try {
-
-        const next = event.newValue ? JSON.parse(event.newValue) : [];
-
-        if (Array.isArray(next)) {
-
-          setPromociones(next);
-
-        }
-
-      } catch (error) {
-
-        // ignore malformed data
-
-      }
-
-    };
-
-    window.addEventListener('storage', handleStorage);
-
-    return () => window.removeEventListener('storage', handleStorage);
-
-  }, [activeYear]);
-
-
-
-  useEffect(() => {
-
-    const handleArbitroStorage = (event) => {
-
-      if (event.key !== 'arbitroData') return;
-
-      setArbitroData(event.newValue ? JSON.parse(event.newValue) : null);
-
-    };
-
-    window.addEventListener('storage', handleArbitroStorage);
-
-    return () => window.removeEventListener('storage', handleArbitroStorage);
-
-  }, []);
 
 
 
@@ -690,31 +523,7 @@ function App() {
 
             // Load editor state from the database as the source of truth
 
-            if (arbitro.promociones && Array.isArray(arbitro.promociones)) {
-              const params = new URLSearchParams(window.location.search);
-              const promoIdFromUrl = params.get('promocion');
-              const isIntegranteFlow = Boolean(promoIdFromUrl);
-              const remotePromociones = arbitro.promociones;
-
-              if (isIntegranteFlow) {
-                const targetInRemote = remotePromociones.some((p) => p.id === promoIdFromUrl);
-                if (!targetInRemote) {
-                  const localPromociones = leerStorage('promociones', []);
-                  const targetInLocal = Array.isArray(localPromociones)
-                    ? localPromociones.find((p) => p.id === promoIdFromUrl)
-                    : null;
-                  if (targetInLocal) {
-                    setPromociones([...remotePromociones, targetInLocal]);
-                  } else {
-                    setPromociones(remotePromociones);
-                  }
-                } else {
-                  setPromociones(remotePromociones);
-                }
-              } else {
-                setPromociones(remotePromociones);
-              }
-            }
+            if (Array.isArray(arbitro.promociones)) setPromociones(arbitro.promociones);
 
             if (arbitro.disciplinas && Array.isArray(arbitro.disciplinas)) {
 
@@ -726,6 +535,15 @@ function App() {
 
               setCategoriasSeleccionadas(arbitro.categorias);
 
+            }
+            if (arbitro.categoriasDisponibles && Array.isArray(arbitro.categoriasDisponibles)) {
+              setCategoriasDisponibles(arbitro.categoriasDisponibles);
+            }
+            if (typeof arbitro.linkGeneral === 'string') {
+              setLinkGeneral(arbitro.linkGeneral);
+            }
+            if (typeof arbitro.linkRegistro === 'string') {
+              setLinkRegistro(arbitro.linkRegistro);
             }
 
             if (arbitro.puntosPorPuesto) {
@@ -745,31 +563,7 @@ function App() {
 
       } catch (err) {
 
-        console.warn('API not available, using localStorage as fallback.', err);
-
-      } finally {
-
-        setIsLoading(false);
-
-      }
-
-
-
-      // 2. Fallback to localStorage if API fails
-
-      try {
-
-        const local = localStorage.getItem('arbitroData');
-
-        if (local) {
-
-          setArbitroData(JSON.parse(local));
-
-        }
-
-      } catch (e) {
-
-        // Ignore errors reading from localStorage
+        console.warn('API not available.', err);
 
       }
 
@@ -788,21 +582,6 @@ function App() {
     return () => clearInterval(interval);
 
   }, [activeYear, authUser]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('calendario', JSON.stringify(calendario));
-    } catch (e) { }
-  }, [calendario]);
-
-  useEffect(() => {
-    const handleCalendarioStorage = (event) => {
-      if (event.key !== 'calendario') return;
-      setCalendario(event.newValue ? JSON.parse(event.newValue) : {});
-    };
-    window.addEventListener('storage', handleCalendarioStorage);
-    return () => window.removeEventListener('storage', handleCalendarioStorage);
-  }, []);
 
   useEffect(() => {
     const ownerKey = promocionAuth?.numero || promocionAuth?.alias || '';
@@ -833,21 +612,37 @@ function App() {
     setLogoTorneo(nextLogo);
   }, [arbitroData?.logoTorneo]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const usuario = loginForm.usuario.trim();
     const password = loginForm.password.trim();
-    const usuarios = leerStorage('usuariosAdmin', []);
-    const encontrado = usuarios.find((item) => item.usuario === usuario && item.password === password);
-    if (!encontrado) {
-      setAuthError('Credenciales invalidas.');
+
+    if (!usuario || !password) {
+      setAuthError('Completa los datos.');
       return;
     }
-    setAuthError('');
-    setAuthUser({ usuario, rol: encontrado.rol || 'organizador' });
-    setLoginForm({ usuario: '', password: '' });
+
+    try {
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuario, password }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAuthError(data?.mensaje || 'Credenciales invalidas.');
+        return;
+      }
+
+      setAuthError('');
+      setAuthUser({ usuario: data.usuario || usuario, rol: data.rol || 'organizador' });
+      setLoginForm({ usuario: '', password: '' });
+    } catch (error) {
+      setAuthError('No se pudo conectar al servidor.');
+    }
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const usuario = registerForm.usuario.trim();
     const password = registerForm.password.trim();
     if (!usuario || !password) {
@@ -855,53 +650,68 @@ function App() {
       return;
     }
     const rol = registerRole;
-    const claveArbitro = localStorage.getItem('claveArbitro') || 'ARBITRO2026';
     if (rol === 'arbitro') {
       const codigo = registerCodigoArbitro.trim();
       if (!codigo) {
         setAuthError('Ingresa la clave de arbitro.');
         return;
       }
-      if (codigo !== claveArbitro) {
-        setAuthError('Clave de arbitro invalida.');
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usuario,
+          password,
+          rol,
+          codigoSecret: registerCodigoArbitro.trim(),
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAuthError(data?.mensaje || 'No se pudo registrar la cuenta.');
         return;
       }
+
+      setAuthError('');
+      setAuthUser({ usuario: data.usuario || usuario, rol: data.rol || rol });
+      setRegisterForm({ usuario: '', password: '' });
+      setRegisterCodigoArbitro('');
+    } catch (error) {
+      setAuthError('No se pudo conectar al servidor.');
     }
-    const usuarios = leerStorage('usuariosAdmin', []);
-    if (usuarios.some((item) => item.usuario === usuario)) {
-      setAuthError('Ese usuario ya existe.');
-      return;
-    }
-    const next = [...usuarios, { usuario, password, rol }];
-    try {
-      localStorage.setItem('usuariosAdmin', JSON.stringify(next));
-    } catch (e) { }
-    setAuthError('');
-    setAuthUser({ usuario, rol });
-    setRegisterForm({ usuario: '', password: '' });
-    setRegisterCodigoArbitro('');
   };
 
-  const handlePromocionLogin = () => {
+  const handlePromocionLogin = async () => {
     const numero = promocionLogin.numero.trim();
     const password = promocionLogin.password.trim();
-    const usuarios = leerStorage('promocionUsuarios', []);
-    const encontrado = usuarios.find(
-      (item) => (item.numero || item.nombre) === numero && item.password === password
-    );
-    if (!encontrado) {
-      setPromocionError('Credenciales invalidas.');
+    if (!numero || !password) {
+      setPromocionError('Completa los datos.');
       return;
     }
-    setPromocionError('');
-    setPromocionAuth({
-      numero: encontrado.numero || numero,
-      alias: encontrado.alias || encontrado.nombre || '',
-    });
-    setPromocionLogin({ numero: '', password: '' });
+    try {
+      const res = await fetch(`${API_URL}/api/promo/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numero, password, anio: activeYear }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPromocionError(data?.mensaje || 'Credenciales invalidas.');
+        return;
+      }
+      setPromocionError('');
+      setPromocionAuth({ numero: data.numero || numero, alias: data.alias || '' });
+      setPromocionLogin({ numero: '', password: '' });
+    } catch (error) {
+      setPromocionError('No se pudo conectar al servidor.');
+    }
   };
 
-  const handlePromocionRegister = () => {
+  const handlePromocionRegister = async () => {
     const numero = promocionRegister.numero.trim();
     const alias = promocionRegister.alias.trim();
     const password = promocionRegister.password.trim();
@@ -909,18 +719,23 @@ function App() {
       setPromocionError('Completa los datos.');
       return;
     }
-    const usuarios = leerStorage('promocionUsuarios', []);
-    if (usuarios.some((item) => (item.numero || item.nombre) === numero)) {
-      setPromocionError('Ese numero de promocion ya esta registrado.');
-      return;
-    }
-    const next = [...usuarios, { numero, alias, password }];
     try {
-      localStorage.setItem('promocionUsuarios', JSON.stringify(next));
-    } catch (e) { }
-    setPromocionError('');
-    setPromocionAuth({ numero, alias });
-    setPromocionRegister({ numero: '', alias: '', password: '' });
+      const res = await fetch(`${API_URL}/api/promo/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numero, alias, password, anio: activeYear }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPromocionError(data?.mensaje || 'No se pudo registrar la promocion.');
+        return;
+      }
+      setPromocionError('');
+      setPromocionAuth({ numero: data.numero || numero, alias: data.alias || alias });
+      setPromocionRegister({ numero: '', alias: '', password: '' });
+    } catch (error) {
+      setPromocionError('No se pudo conectar al servidor.');
+    }
   };
 
   const handleLogout = () => setAuthUser(null);
@@ -1000,7 +815,7 @@ function App() {
     );
   };
 
-  const handleCrearCategoria = () => {
+  const handleCrearCategoria = async () => {
     const nombre = nuevaCategoria.trim();
     if (!nombre) return;
     const id = normalizarId(nombre);
@@ -1011,8 +826,10 @@ function App() {
       setNuevaCategoria('');
       return;
     }
-    setCategoriasDisponibles((prev) => [...prev, { id, nombre }]);
+    const nextDisponibles = [...categoriasDisponibles, { id, nombre }];
+    setCategoriasDisponibles(nextDisponibles);
     setNuevaCategoria('');
+    await guardarArbitroData({ categoriasDisponibles: nextDisponibles });
   };
 
   const handleUsarCategoria = async (categoria) => {
@@ -1022,7 +839,7 @@ function App() {
       : [...categoriasSeleccionadas, categoria];
     setCategoriasDisponibles(nextDisponibles);
     setCategoriasSeleccionadas(nextSeleccionadas);
-    await guardarArbitroData({ categorias: nextSeleccionadas });
+    await guardarArbitroData({ categorias: nextSeleccionadas, categoriasDisponibles: nextDisponibles });
   };
 
   const handleQuitarCategoria = async (categoria) => {
@@ -1035,7 +852,11 @@ function App() {
     setCategoriasSeleccionadas(nextSeleccionadas);
     setCategoriasDisponibles(nextDisponibles);
     setPromociones(nextPromociones);
-    await guardarArbitroData({ categorias: nextSeleccionadas, promociones: nextPromociones });
+    await guardarArbitroData({
+      categorias: nextSeleccionadas,
+      promociones: nextPromociones,
+      categoriasDisponibles: nextDisponibles,
+    });
   };
 
   const handleEliminarCategoria = async (categoria) => {
@@ -1047,21 +868,29 @@ function App() {
     setCategoriasSeleccionadas(nextSeleccionadas);
     setCategoriasDisponibles(nextDisponibles);
     setPromociones(nextPromociones);
-    await guardarArbitroData({ categorias: nextSeleccionadas, promociones: nextPromociones });
+    await guardarArbitroData({
+      categorias: nextSeleccionadas,
+      promociones: nextPromociones,
+      categoriasDisponibles: nextDisponibles,
+    });
     setToastMensaje('Cambios guardados.');
   };
 
-  const handleGenerarLinkGeneral = () => {
+  const handleGenerarLinkGeneral = async () => {
     // Permite regenerar (sobrescribir)
     const token = generarToken();
-    setLinkGeneral(buildLink(`/?token=${token}&view=results&anio=${activeYear}`));
+    const nextLink = buildLink(`/?token=${token}&view=results&anio=${activeYear}`);
+    setLinkGeneral(nextLink);
+    await guardarArbitroData({ linkGeneral: nextLink });
     setToastMensaje('Link público generado nuevamente');
   };
 
-  const handleGenerarLinkRegistro = () => {
+  const handleGenerarLinkRegistro = async () => {
     // Permite regenerar (sobrescribir)
     const token = generarToken();
-    setLinkRegistro(buildLink(`/?token=${token}&view=register&anio=${activeYear}`));
+    const nextLink = buildLink(`/?token=${token}&view=register&anio=${activeYear}`);
+    setLinkRegistro(nextLink);
+    await guardarArbitroData({ linkRegistro: nextLink });
     setToastMensaje('Link de registro generado nuevamente');
   };
 
@@ -1300,32 +1129,33 @@ function App() {
     const {
       promociones: overridePromociones,
       categorias: overrideCategorias,
+      categoriasDisponibles: overrideCategoriasDisponibles,
       disciplinas: overrideDisciplinas,
       puntos: overridePuntos,
       rankings: overrideRankings,
       torneoHabilitado: overrideTorneoHabilitado,
       logoTorneo: overrideLogoTorneo,
+      linkGeneral: overrideLinkGeneral,
+      linkRegistro: overrideLinkRegistro,
     } = overrideStates;
-
-    const usuariosAdmin = leerStorage('usuariosAdmin', []).map((user) => ({
-      usuario: user.usuario,
-      rol: user.rol || 'organizador',
-    }));
     
     const promocionesPublicadas = (overridePromociones ?? promociones).map((promocion) => ({ ...promocion }));
 
     return {
       categorias: overrideCategorias ?? categoriasSeleccionadas,
+      categoriasDisponibles: overrideCategoriasDisponibles ?? categoriasDisponibles,
       promociones: promocionesPublicadas,
-      usuariosAdmin,
+      usuariosAdmin: Array.isArray(arbitroData?.usuariosAdmin) ? arbitroData.usuariosAdmin : [],
       disciplinas: overrideDisciplinas ?? disciplinasConfig,
       puntosPorPuesto: overridePuntos ?? puntosPorPuesto,
       rankingsHistoricos: overrideRankings ?? rankingsHistoricos,
       torneoHabilitado: typeof overrideTorneoHabilitado === 'boolean' ? overrideTorneoHabilitado : torneoHabilitado,
       logoTorneo: overrideLogoTorneo ?? logoTorneo,
+      linkGeneral: overrideLinkGeneral ?? linkGeneral,
+      linkRegistro: overrideLinkRegistro ?? linkRegistro,
       publicadoEn: new Date().toISOString(),
     };
-  }, [categoriasSeleccionadas, promociones, disciplinasConfig, puntosPorPuesto, rankingsHistoricos, torneoHabilitado, logoTorneo]);
+  }, [categoriasSeleccionadas, categoriasDisponibles, promociones, arbitroData, disciplinasConfig, puntosPorPuesto, rankingsHistoricos, torneoHabilitado, logoTorneo, linkGeneral, linkRegistro]);
 
   const guardarArbitroData = useCallback(async (overrideStates = {}) => {
     const payload = construirPayloadArbitro(overrideStates);
@@ -1349,10 +1179,13 @@ function App() {
         setPromociones(json.payload.promociones || []);
         setArbitroData(json.payload); // Para la vista pública
         setCategoriasSeleccionadas(json.payload.categorias || []);
+        setCategoriasDisponibles(json.payload.categoriasDisponibles || []);
         setDisciplinasConfig(json.payload.disciplinas || []);
         setPuntosPorPuesto(json.payload.puntosPorPuesto || {});
         setRankingsHistoricos(json.payload.rankingsHistoricos || []);
         setCalendario(json.payload.calendario || {});
+        if (typeof json.payload.linkGeneral === 'string') setLinkGeneral(json.payload.linkGeneral);
+        if (typeof json.payload.linkRegistro === 'string') setLinkRegistro(json.payload.linkRegistro);
         setLogoTorneo(typeof json.payload.logoTorneo === 'string' ? json.payload.logoTorneo : '');
         if (typeof json.payload.torneoHabilitado === 'boolean') {
           setTorneoHabilitado(json.payload.torneoHabilitado);
@@ -1368,10 +1201,13 @@ function App() {
         setPromociones(optimisticPayload.promociones || []);
         setArbitroData(optimisticPayload);
         setCategoriasSeleccionadas(optimisticPayload.categorias || []);
+        setCategoriasDisponibles(optimisticPayload.categoriasDisponibles || []);
         setDisciplinasConfig(optimisticPayload.disciplinas || []);
         setPuntosPorPuesto(optimisticPayload.puntosPorPuesto || {});
         setRankingsHistoricos(optimisticPayload.rankingsHistoricos || []);
         setCalendario(optimisticPayload.calendario || {});
+        if (typeof optimisticPayload.linkGeneral === 'string') setLinkGeneral(optimisticPayload.linkGeneral);
+        if (typeof optimisticPayload.linkRegistro === 'string') setLinkRegistro(optimisticPayload.linkRegistro);
         setLogoTorneo(typeof optimisticPayload.logoTorneo === 'string' ? optimisticPayload.logoTorneo : '');
         if (typeof optimisticPayload.torneoHabilitado === 'boolean') {
           setTorneoHabilitado(optimisticPayload.torneoHabilitado);
@@ -1390,20 +1226,12 @@ function App() {
     }
   }, [construirPayloadArbitro, calendario, activeYear]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('rankingsHistoricos', JSON.stringify(rankingsHistoricos));
-    } catch (e) { }
-  }, [rankingsHistoricos]);
-
   const EXCEL_HEADERS = ['PROMOCION', 'CATEGORÍA', 'adicional', 'INAGURAC', 'ATLETISM', 'BASQUET', 'FULBITO', 'CUBILETE', 'PEÑA', 'NATACION', 'SAPO', 'TENIS DE MESA', 'AJEDREZ', 'CROSS', 'TOTAL'];
   const EXCEL_COL_TO_DISCIPLINA = { INAGURAC: 'INAUGURACION', ATLETISM: 'ATLETISMO', BASQUET: 'BALONCESTO', FULBITO: 'FULBITO', CUBILETE: 'CUBILETE', PEÑA: 'PENA', NATACION: 'NATACION', SAPO: 'TIRO AL SAPO', 'TENIS DE MESA': 'TENIS DE MESA', AJEDREZ: 'AJEDREZ', CROSS: 'CROSS COUNTRY' };
 
   const handlePublicarDatos = async () => {
     const ok = await guardarArbitroData();
-    if (ok) {
-      localStorage.setItem('arbitroAutoSync', 'true');
-    }
+    if (ok) setToastMensaje('Publicacion sincronizada en la base de datos.');
   };
 
   const handleLimpiarPublicacionActual = async () => {
@@ -1930,18 +1758,6 @@ function App() {
   const getPromoTitulo = (promocion) => `Promocion ${getPromoNumero(promocion) || ''}`.trim();
   const getPromoAlias = (promocion) => promocion?.alias || promocion?.nombre || 'Sin alias';
 
-  useEffect(() => {
-    const autoSync = localStorage.getItem('arbitroAutoSync') === 'true';
-    if (!autoSync) return;
-    // Evita sobrescribir datos desde links públicos o vistas sin sesión de organizador.
-    if (!authUser) return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('promocion') || params.get('categoria') || params.get('token')) return;
-    if (isLoading) return;
-    guardarArbitroData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeYear, authUser, isLoading]);
-
   const searchParams = new URLSearchParams(window.location.search);
   const categoriaParam = searchParams.get('categoria');
   const promocionParam = searchParams.get('promocion');
@@ -2032,7 +1848,7 @@ function App() {
     let active = true;
     let misses = 0;
 
-    const cached = leerStorage('promociones', []).find((promocion) => promocion.id === promocionParam) || null;
+    const cached = promociones.find((promocion) => promocion.id === promocionParam) || null;
     if (cached) {
       setIntegrantePromocion(cached);
       setIntegrantePromoNotFound(false);
@@ -2076,7 +1892,7 @@ function App() {
       active = false;
       clearInterval(interval);
     };
-  }, [isIntegrante, promocionParam, activeYear]);
+  }, [isIntegrante, promocionParam, activeYear, promociones]);
 
   useEffect(() => {
     if (!isIntegrante) return;
